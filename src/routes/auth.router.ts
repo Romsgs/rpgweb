@@ -1,10 +1,12 @@
 import { Router, Request, Response } from 'express'
-import { AuthService } from '../auth/auth.service'
+import { AuthController } from '../auth/authController'
 
-const authService = new AuthService()
+const authController = new AuthController()
 
 const authRouter = Router()
 
-authRouter.post('/', (req: Request, res: Response) => authService)
+authRouter.post('/user', (req: Request, res: Response) => authController.register(req.body))
+authRouter.post('/login', (req: Request, res: Response) => authController.login(req.body))
+
 
 export default authRouter
