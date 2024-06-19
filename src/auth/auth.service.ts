@@ -6,13 +6,13 @@ import { User } from '@prisma/client'
 const userRepository = new UserRepository()
 const JWT_SECRET = process.env.JWT_SECRET
 
-import { IAuthService, registerUserDTO } from './AuthServiceInterfaces'
+import { IAuthService } from './AuthInterfaces'
 
 export class AuthService implements IAuthService {
 
     // Register a new user
-    async register(body: registerUserDTO): Promise<User> {
-        return await userRepository.create(body.email, body.name, body.password)
+    async register(email: string, name: string, password: string): Promise<User> {
+        return await userRepository.create(email, name, password)
     }
 
     // Login user and return JWT token
@@ -30,14 +30,14 @@ export class AuthService implements IAuthService {
 
     // Generate JWT token
     generateToken(user: User): string {
-        const payload = { id: user.id, email: user.email }
+        const payload = { id: user.id, email: user.email, createdAt: Date.now() }
         if (!JWT_SECRET) {
             throw Error("Internal Server Error, code: 500, subject token")
         }
         return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
     }
 
-    // Verify JWT token
+    // Verify JWT token >> middleware
     verifyToken(token: string): any {
         try {
             if (!JWT_SECRET) {
