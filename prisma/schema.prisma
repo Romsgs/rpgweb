@@ -14,20 +14,23 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String?
-  password  String
-  rooms     Rooms?
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email    String  @unique
+  name     String?
+  password String
+  rooms    Room[]  @relation("UserRooms")
 }
 
-
-
-// Rooms is an embedded document
-type Rooms {
-  name     String 
-  type     String
-  password String
-  stars    Int? @default(0)
-  public   Boolean? @default(true)
+model Room {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  type       String
+  password   String?
+  stars      Int      @default(0)
+  isPublic   Boolean  @default(true)
+  owner      User     @relation("UserRooms", fields: [ownerId], references: [id])
+  ownerId    String   @db.ObjectId
+  maxPlayers Int
+  createdAt  DateTime @default(now())
+  status     String   @default("active")
 }
