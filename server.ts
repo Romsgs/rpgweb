@@ -24,3 +24,4 @@ app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/room', roomsRouter)
 
 server.listen(PORT, () => { console.log(`server running on ${PORT}`) })
+
